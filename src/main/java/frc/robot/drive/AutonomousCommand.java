@@ -14,12 +14,12 @@ import frc.robot.Constants.DriveConstants;
 public class AutonomousCommand extends SequentialCommandGroup {
     private static final String trajectoryJSON = "paths/YourPath.wpilib.json";
 
-    public AutonomousCommand(DriveSubsystem driveSubsystem) throws java.io.IOException {
+    public AutonomousCommand(final DriveSubsystem driveSubsystem) throws java.io.IOException {
 
-        var trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-        var trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+        final var trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+        final var trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
 
-        var ramseteCommand = new RamseteCommand(trajectory, driveSubsystem::getPose,
+        final var ramseteCommand = new RamseteCommand(trajectory, driveSubsystem::getPose,
                 new RamseteController(AutoConstants.ramseteB, AutoConstants.ramseteZeta),
                 new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
                         DriveConstants.kaVoltSecondsSquaredPerMeter),
@@ -28,9 +28,9 @@ public class AutonomousCommand extends SequentialCommandGroup {
                 // RamseteCommand passes volts to the callback
                 driveSubsystem::tankDriveVolts, driveSubsystem);
 
-        // Run path following command, then stop at the end.
-        var stopCommand = new InstantCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem);
+        final var stopCommand = new InstantCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem);
 
+        // Run path following command, then stop at the end.
         addCommands(ramseteCommand, stopCommand);
     }
 }

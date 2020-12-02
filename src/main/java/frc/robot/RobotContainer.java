@@ -60,7 +60,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         try {
             return new AutonomousCommand(driveSubsystem);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             DriverStation.reportError("Unable to open trajectory", ex.getStackTrace());
             return null;
         }

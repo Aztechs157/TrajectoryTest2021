@@ -41,7 +41,7 @@ public final class Constants {
 
         public static final int encoderCPR = 1024;
         public static final double wheelDiameterMeters = 0.15;
-        public static final double encoderDistancePerPulse =
+        public static final double encoderPositionConversionFactor =
                 // Assumes the encoders are directly mounted on the wheel shafts
                 (wheelDiameterMeters * Math.PI) / (double) encoderCPR;
 
