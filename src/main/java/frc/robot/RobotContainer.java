@@ -7,9 +7,17 @@
 
 package frc.robot;
 
+import java.io.IOException;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.OIConstants;
+import frc.robot.drive.AutonomousCommand;
+import frc.robot.drive.DriveSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -19,6 +27,10 @@ import edu.wpi.first.wpilibj2.command.Command;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
+    private final XboxController driveController = new XboxController(OIConstants.driverControllerPort);
+
+    private final DriveSubsystem driveSubsystem = new DriveSubsystem(driveController);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -35,6 +47,9 @@ public class RobotContainer {
      * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        // Drive at half speed when the right bumper is held
+        new JoystickButton(driveController, Button.kBumperRight.value)
+                .whenPressed(() -> driveSubsystem.setMaxOutput(0.5)).whenReleased(() -> driveSubsystem.setMaxOutput(1));
     }
 
     /**
@@ -43,6 +58,11 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return null;
+        try {
+            return new AutonomousCommand(driveSubsystem);
+        } catch (IOException ex) {
+            DriverStation.reportError("Unable to open trajectory", ex.getStackTrace());
+            return null;
+        }
     }
 }
